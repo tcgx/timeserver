@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/labstack/gommon/log"
 	"net/http"
 	"time"
@@ -22,8 +21,7 @@ type (
 
 func getTime(w http.ResponseWriter, req *http.Request) {
 
-	resJson.Timestamp = time.Now().Unix()
-	fmt.Println(resJson)
+	resJson.Timestamp = time.Now().UnixNano()/1000000
 	resByte, err := json.Marshal(resJson)
 	if err != nil {
 		panic(err.Error())
