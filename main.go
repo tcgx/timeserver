@@ -8,9 +8,11 @@ import (
 )
 
 var resJson *res
+var timeChan chan int64
 
 func init() {
 	resJson = &res{}
+	timeChan = make(chan int64, 1)
 }
 
 type (
@@ -20,8 +22,6 @@ type (
 )
 
 func getTime(w http.ResponseWriter, req *http.Request) {
-
-	resJson.Timestamp = time.Now().UnixNano()/1000000
 	resByte, err := json.Marshal(resJson)
 	if err != nil {
 		panic(err.Error())
@@ -30,10 +30,24 @@ func getTime(w http.ResponseWriter, req *http.Request) {
 	w.Write(resByte)
 }
 
+func startTimer() {
+	for{
+		select {
+		case <-timeChan:
+			resJson.Timestamp = time.Now().UnixNano()/1000000
+		case <-time.After(time.Duration(1)*time.Millisecond):
+			resJson.Timestamp = time.Now().UnixNano()/1000000
+		}
+	}
+}
+
 func main() {
 	http.HandleFunc("/", getTime)
-	err := http.ListenAndServe(":1323", nil)
+	timeChan <- time.Now().Unix()
+	go startTimer()
+	err := http.ListenAndServe(":1325", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
 }
+
