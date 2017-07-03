@@ -34,9 +34,9 @@ func startTimer() {
 	for{
 		select {
 		case <-timeChan:
-			resJson.Timestamp = time.Now().UnixNano()/1000000
+			resJson.Timestamp = time.Now().Unix
 		case <-time.After(time.Duration(1)*time.Millisecond):
-			resJson.Timestamp = time.Now().UnixNano()/1000000
+			resJson.Timestamp = time.Now().Unix
 		}
 	}
 }
