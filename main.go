@@ -34,9 +34,9 @@ func startTimer() {
 	for{
 		select {
 		case <-timeChan:
-			resJson.Timestamp = time.Now().Unix
+			resJson.Timestamp = time.Now().Unix()
 		case <-time.After(time.Duration(1)*time.Millisecond):
-			resJson.Timestamp = time.Now().Unix
+			resJson.Timestamp = time.Now().Unix()
 		}
 	}
 }
